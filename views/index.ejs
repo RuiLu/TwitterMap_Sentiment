@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta charset="utf-8">
+        <title>TwitterMap</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="">
+        <meta name="author" content="RuiLu">
+
+        <link href="stylesheets/bootstrap.min.css" rel="stylesheet">
+        <style>
+            body {
+                padding-top: 60px;
+            }
+        </style>
+        <link href="stylesheets/bootstrap-responsive.min.css" rel="stylesheet">
+        <link href="stylesheets/app.css" rel="stylesheet">
+
+        <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+        <!--[if lt IE 9]>
+        <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+
+        <link rel="shortcut icon" href="http://twitter.github.com/bootstrap/assets/ico/favicon.ico">
+        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="http://twitter.github.com/bootstrap/assets/ico/apple-touch-icon-144-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="http://twitter.github.com/bootstrap/assets/ico/apple-touch-icon-114-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="http://twitter.github.com/bootstrap/assets/ico/apple-touch-icon-72-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" href="http://twitter.github.com/bootstrap/assets/ico/apple-touch-icon-57-precomposed.png">
+        <style type="text/css"></style>
+    </head>
+
+    <body>
+        
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container-fluid">
+                    <a class="brand" href="/"><span style="color: #58ACFA;font-weight: bold">TwitterMap</span> 
+                        <span style="color: #E6E6E6;font-weight: lighter"> See What is happening</span>
+                    </a>
+                    <div class="nav-collapse collapse">
+                        <p class="navbar-text pull-right">
+                              <span style="color: #01A9DB; font-weight: bold">Search Keyword: </span>
+                              <span id="keycriteria" class="label label-info">the</span>
+                              <span style="color: #31B404; font-weight: bold">Positive: </span>
+                              <span id="positive" class="label label-pill label-success">0</span>
+                              <span style="color: #FE9A2E; font-weight: bold">Neutral: </span>
+                              <span id="neutral" class="label label-pill label-warning">0</span>
+                              <span style="color: #DF3A01; font-weight: bold">Negative: </span>
+                              <span id="negative" class="label label-pill label-important">0</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="container-fluid">
+            <div class="row_fluid">
+                
+                <div class="span4">
+                    <span style="color: #000000; font-size: 14pt; font-weight: bold">Key Word</span>
+                    <span style="color: #FFFFFF; font-size: 4pt; font-weight: bold">I choose Captain America!</span>
+                    <div class="row-fluid">
+                        <div class="span3">
+                            <select class="form-control" name="sel-keywords" id="sel-keywords">
+                                <option>the</option>
+                                <option>you</option>
+                                <option>are</option>
+                                <option>is</option>
+                                <option>sport</option>
+                                <option>food</option>
+                                <option>music</option>
+                                <option>game</option>
+                            </select>
+                        </div>
+                        <div class="span1"></div>
+                    </div>
+                    <span style="color: #000000; font-size: 14pt; font-weight: bold">Map Type</span>
+                    <span style="color: #FFFFFF; font-size: 4pt; font-weight: bold">"So was I"</span>
+                    <div class="row-fluid">
+                        <div class="span4">
+                            <select class="form-control" name="sel-maptype" id="sel-maptype">
+                                <option>Scatter</option>
+                                <option>HeatMap</option>
+                                <option>Sentiment</option>
+                            </select>                  
+                        </div>
+                        <div class="span4">
+                            <button type="button" id="myButton" data-loading-text="Loading..." class="btn btn-primary" autocomplete="off">
+                              Cluster
+                            </button>          
+                        </div>
+                    </div>
+                
+                    <div class="accordion-group">
+                        <div class="breadcrumb" id="breadcrumb_a">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapse2">
+                                <i class="icon-minus icon-white"></i>
+                                Tweets with Geo information
+                            </a>
+
+                            <div class="tooltip-box" style="float: right">
+                                <a href="#" rel="tooltip" data-placement="top" data-original-title="The list of tweets with geo information">
+                                    <i class="icon-info-sign icon-white"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <!-- <span style="color: #000000; font-size: 14pt; font-weight: bold">Tweets with Geo information</span> -->
+                        <div class="accordion-body collapse" id="collapse2">
+                            <div class="accordion-inner" id="tableinner">
+                                <div class="widgetblock" id="tweetswithgeotag">
+                                    <table class="table table-striped" id="geotweetstable">
+                                        <thead></thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- then map -->
+                <div class="span8">
+                    <div class="accordion" id="accordion">
+                        <div class="breadcrumb" id="breadcrumb_b">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapse1"><i class="icon-minus icon-white"></i> Tweets Map
+                            </a>
+                            <button id="clearMapButton" type="button" class="btn btn-success btn-mini btn-primary" style="float: right">Clear all</button>
+                        </div>
+                        <div id="collapse1" class="accordion-body collpase">
+                            <div class="accordion-inner">
+                                <div id="map"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row_fluid">
+                    <div class="row-fluid">
+                        
+                        <span style="font-size: 14pt; color: #58ACFA; font-weight: bold">Trends </span> 
+                        <span style="font-size: 9pt; color: #000000">(pls choose a city)</span>
+                        <span style="color: #FFFFFF">L</span>
+                        <select class="form-control-trends" name="sel-trends" id="sel-trends">
+                            <option>Worldwide</option>
+                            <option>New York</option>
+                            <option>Los Angeles</option>
+                            <option>Toronto</option>
+                            <option>London</option>
+                            <option>Rio de Janeiro</option>
+                            <option>Paris</option>
+                            <option>Tokyo</option>
+                        </select>
+                        <span style="color: #FFFFFF">hehe</span>
+                        <span id="1" class="label label-default">Default Label</span>
+                        <span id="2" class="label label-important">Primary Label</span>
+                        <span id="3" class="label label-success">Success Label</span>
+                        <span id="4" class="label label-info">Info Label</span>
+                        <span id="5" class="label label-warning">Warning Label</span>
+                        <span id="6" class="label label-default">Danger Label</span>
+                        <span id="7" class="label label-important">Default Label</span>
+                        <span id="8" class="label label-success">Primary Label</span>
+                        <span id="9" class="label label-info">Success Label</span>
+                        <span id="10" class="label label-warning">Info Label</span>
+                    </div>
+            </div>
+            
+            <hr>
+            
+        </div>
+        <footer class>
+            <div class="container text-muted text-center">
+                <h5>&copy; Rui Lu © CloudComputing@Fall2015</h5>
+            </div>
+        </footer>
+
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+        <script src="http://www.google.com/jsapi"></script>
+        <script src="http://google-maps-utility-library-v3.googlecode.com/svn/tags/markerclusterer/1.0/src/data.json" type="text/javascript"></script>
+        <script type="text/javascript" src="http://google-maps-utility-library-v3.googlecode.com/svn/tags/markerclusterer/1.0/src/markerclusterer.js"></script>
+        <script src="javascripts/bootstrap.min.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false&libraries=visualization"></script>
+        <script src="/javascripts/socket.js"></script>
+        <script type="text/javascript">
+            $(".collapse").collapse();
+            $('#accordion').collapse({hide: true})
+            $(".accordion-toggle").click(function() {
+                var imgElement =$(this).find('i:first');
+                if(imgElement.attr('class')==="icon-minus icon-white"){
+                    imgElement.attr('class','icon-plus icon-white');
+                } else {
+                    imgElement.attr('class','icon-minus icon-white');
+                }
+            });
+            $('#tweetsTab a').click(function (e) {
+                e.preventDefault();
+                $(this).tab('show');
+            });
+            $('#tweetsTab a:first').tab('show');
+
+            $('.tooltip-box').tooltip({
+                selector: "a[rel=tooltip]"
+            })
+        </script>
+
+    </body>
+</html>
